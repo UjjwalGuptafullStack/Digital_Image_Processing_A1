@@ -46,3 +46,15 @@ The following were distributed through
 
 Students must separately credit any footage, background plate, photograph, or
 other material they add themselves.
+
+## Student-supplied assets (Problem 5)
+
+- `images/p5/pano.jpg` — background plate. “Wide view to Gornergletscher,
+  Monte Rosa and Matterhorn, 2012 August,” by Ximonic (Simo Räsänen),
+  [source](https://commons.wikimedia.org/wiki/File:Wide_view_to_Gornergletscher,_Monte_Rosa_and_Matterhorn,_2012_August.jpg),
+  [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.en).
+  Used unmodified aside from cropping/resizing for the panning composite.
+- `images/p5/green_screen_clip.mp4` and the derived frame set under
+  `images/p5/frames/` — “Slap In The Face, Punch, Blow,” by KlausHausmann,
+  [source](https://pixabay.com/videos/slap-in-the-face-punch-blow-7375/),
+  [Pixabay Content License](https://pixabay.com/service/license-summary/).
