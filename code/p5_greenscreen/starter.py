@@ -120,13 +120,38 @@ def composite(fg, bg, alpha, spill=True, key_cbcr=None, spill_strength=1.0):
 
 
 class ChromaLUT:
-    """TODO 5.3: quantise (Cb,Cr) so keying is one table lookup per pixel."""
+    """TODO 5.3: quantise (Cb,Cr) so keying is one table lookup per pixel.
+
+    Cb and Cr each range over [0,255]; `bins` divides that range into
+    `bins` buckets per axis, giving a (bins, bins) precomputed alpha table
+    -- the same key_soft double-threshold-ramp formula, evaluated once per
+    cell centre instead of once per pixel. Keying an image then costs one
+    integer-division (to find each pixel's cell) plus one fancy-index
+    gather from the table, both O(HW) vectorised NumPy operations with no
+    per-pixel Python-level chroma-distance computation.
+    """
 
     def __init__(self, key_cbcr, t_in=None, t_out=None, bins=128):
-        raise NotImplementedError
+        if t_in is None:
+            t_in = 12.0
+        if t_out is None:
+            t_out = 58.0
+        self.bins = bins
+        self.key_cbcr = np.asarray(key_cbcr, dtype=np.float64)
+        edges = np.linspace(0, 256, bins + 1)
+        centres = (edges[:-1] + edges[1:]) / 2.0
+        Cb_c, Cr_c = np.meshgrid(centres, centres, indexing="ij")
+        dist = np.sqrt((Cb_c - key_cbcr[0]) ** 2 + (Cr_c - key_cbcr[1]) ** 2)
+        table = (dist - t_in) / (t_out - t_in)
+        self.table = np.clip(table, 0.0, 1.0).astype(np.float32)
+        self._scale = bins / 256.0
 
     def alpha(self, rgb):
-        raise NotImplementedError
+        ycc = to_ycbcr(rgb)
+        Cb, Cr = ycc[..., 1], ycc[..., 2]
+        ib = np.clip((Cb * self._scale).astype(np.int32), 0, self.bins - 1)
+        ir = np.clip((Cr * self._scale).astype(np.int32), 0, self.bins - 1)
+        return self.table[ib, ir]
 
 
 # ---- provided metrics: do not modify

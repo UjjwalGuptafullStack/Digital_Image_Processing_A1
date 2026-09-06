@@ -1302,11 +1302,88 @@ translucency, which the naive matte's binary silhouette cannot represent at all.
 
 \subsection*{5.3 Video, efficiently (5)}
 \addcontentsline{toc}{subsection}{5.3 Video, efficiently (5)}
-\todoblock{Vectorised compositing of 48 frames against a panning background crop, encoded to
-mp4; report fps and the measured bottleneck.}
 
-\todoblock{Temporal filtering to reduce flicker (measured in a static region or after
-motion-aligning consecutive mattes); show the flicker measure drops and moving edges are not
-smeared/lagged.}
+\paragraph{Vectorised panning composite.}
+\texttt{ChromaLUT} precomputes a $128\times128$ $(C_b,C_r)$-quantised alpha table once (the
+same double-threshold-ramp formula as \texttt{key\_soft}), so keying a frame costs one integer
+division plus one fancy-index gather --- no per-pixel Python loop, and no repeated
+distance computation for pixels that share a chroma bin. All 48 frames are keyed, panned, and
+composited with whole-array NumPy operations (no per-pixel or per-frame Python loop beyond the
+top-level list comprehension over 48 frames). The background crop advances linearly across the
+full available pan range ($8370$px over 48 frames, background plate resized to frame height),
+so the 48-frame sequence pans smoothly across the panorama rather than holding a static crop.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Stage & Time (48 frames) & \% of total \\
+\midrule
+Keying (\texttt{ChromaLUT.alpha}) & 2.66\,s & 21\% \\
+Background panning crop & $<$0.001\,s & 0\% \\
+Composite + spill suppression & 4.81\,s & 37\% \\
+mp4 encode (libx264) & 5.42\,s & 42\% \\
+\midrule
+Total & 12.89\,s & 100\% \\
+\bottomrule
+\end{tabular}
+\caption{Per-stage timing, 48 frames at $1280\times720$.}
+\label{tab:p5_timing}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Images/p5_5_3_timing_breakdown.png}
+\caption{Pipeline timing breakdown.}
+\label{fig:p5_timing}
+\end{figure}
+
+Processing throughput (keying + crop + composite, excluding encode) is $6.4$\,fps; end-to-end
+including mp4 encoding is $3.7$\,fps. The \textbf{bottleneck is mp4 encoding} ($42\%$ of
+total time), not the from-scratch image processing: \texttt{libx264} runs single-threaded
+per-frame in this call pattern and is doing real per-frame entropy coding and motion-compensated
+prediction, work with no NumPy-vectorised equivalent, whereas keying and compositing are both
+already $O(HW)$ vectorised array operations completing in tens of milliseconds per frame.
+Background cropping is free (a view/slice, no copy). Composite+spill is the largest processing
+cost because \texttt{suppress\_spill} recomputes a full-frame \texttt{to\_ycbcr}-scale
+elementwise excess map and \texttt{composite} allocates and blends two full float64 frames per
+call --- both correct but not the leanest possible implementation (a fixed-point or in-place
+version would reduce allocation, at the cost of readability).
+
+\paragraph{Temporal flicker.}
+This clip's studio backing is lit consistently enough that native frame-to-frame flicker,
+measured in a static top-left corner patch (rows 10--60, cols 10--60, never covered by the
+subject) across all 48 frames, is exactly $0$: every frame agrees on that patch's alpha to
+floating-point precision. Demonstrating that a temporal filter reduces flicker therefore
+required \emph{constructing} a case with flicker to remove, in the same spirit as \S5.1's
+synthetic darkening: independent Gaussian chroma noise ($\sigma=12$, freshly seeded per frame,
+simulating a noisier camera/low light) was added to each frame before keying.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Images/p5_5_3_flicker.png}
+\caption{Left: static-region mean alpha, noisy vs.\ EMA-smoothed ($\gamma=0.35$). Right:
+silhouette-edge column position (row $360$) across the pan/motion sequence, true edge (from
+the clean, noise-free frames) vs.\ the edge recovered from noisy+EMA-smoothed alpha.}
+\label{fig:p5_flicker}
+\end{figure}
+
+An exponential moving average, $\alpha_t^{\text{smooth}} = \gamma\alpha_t + (1-\gamma)
+\alpha_{t-1}^{\text{smooth}}$ with $\gamma=0.35$, reduces the static-region \texttt{temporal\_flicker}
+metric from $0.0455$ to $0.0145$ --- a $68.1\%$ reduction, visible in
+Figure~\ref{fig:p5_flicker} (left) as the blue trace tracking a much smoother path than the
+red. Critically, this filter does \textbf{not} smear the moving silhouette: comparing the
+smoothed (noisy-input) edge position against the true edge position from the original
+clean frames along a fixed row that crosses the subject's whole pan/motion arc
+(Figure~\ref{fig:p5_flicker}, right), the mean absolute lag is only $1.98$px and the maximum is
+$5.00$px, on a $1280$px-wide frame --- the filter suppresses frame-to-frame chroma noise
+without perceptibly delaying genuine subject motion, because $\gamma=0.35$ still weights the
+current frame more than half as much as the entire smoothed history combined.
+
+Because this footage's native flicker is already zero, the delivered composite video
+(\texttt{images/p5/composite\_raw.mp4}) uses the raw (unsmoothed) alpha from the clean frames
+directly: applying EMA smoothing to already-flicker-free alpha would add unnecessary temporal
+blur for no measurable benefit, so the filter is demonstrated on the constructed noisy case
+above rather than applied to the final deliverable.
 
 \end{document}
