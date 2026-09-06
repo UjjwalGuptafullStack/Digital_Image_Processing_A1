@@ -1,64 +1,103 @@
-# Digital Image Processing — Assignment 1
+# Digital Image Processing — From Scratch
 
-This is the student release. It contains the assignment source, every supplied
-P1–P4 image, starter code, the fixed test-channel functions, and image credits.
+A collection of core image-processing algorithms implemented from first principles in
+NumPy — no `scipy.ndimage`, `scipy.signal`, `cv2`, or `skimage` calls in the actual
+implementations (only used to cross-check results). Covers 2-D convolution, bit-plane
+steganography, piecewise-linear tone curves, histogram-based contrast methods, and
+green-screen video compositing.
 
-## Start here
+Each topic has a runnable script that regenerates every figure/table in the write-up
+directly from the source images, so every number in the report traces back to code.
 
-1. Read or compile `assignment.tex`.
-2. Install the Python dependencies with:
+## What's implemented
 
-   ```text
-   python -m pip install -r requirements.txt
-   ```
+- **Convolution** — four implementations of 2-D convolution (naive nested loops,
+  vectorised tap-loop, im2col, FFT) verified against each other and against
+  `scipy.signal.convolve2d`; kernel rank analysis via SVD; low-rank/separable
+  convolution approximation; runtime and memory scaling benchmarks.
+- **Bit-plane steganography** — bit-plane decomposition, LSB payload embedding and
+  extraction with a length-prefixed header format, and a custom block-mean
+  quantisation-index-modulation scheme that survives Gaussian noise and JPEG
+  compression where naive LSB embedding fails outright.
+- **Piecewise-linear tone curves** — recovering an unknown pointwise transform from
+  input/output image pairs via dynamic-programming breakpoint search, with automatic
+  segment-count selection (BIC with a quantisation-noise floor) and an analysis of
+  when a transform is identifiable from the data at all.
+- **Histogram processing** — global equalisation (with proofs of idempotence and
+  non-flatness), histogram matching/specification via inverse-CDF composition,
+  hue-preserving colour equalisation, CLAHE implemented from scratch (tiled,
+  clip-limited, bilinearly interpolated), and a parameter-free auto-exposure
+  corrector.
+- **Green-screen compositing** — chroma-distance keying, soft alpha mattes, spill
+  suppression, and a vectorised video compositing pipeline with temporal
+  flicker reduction.
 
-3. Implement the `TODO` functions in the relevant `code/*/starter.py` files.
-   You may rename or copy your completed files for submission.
-4. Run programs from this folder, so paths such as
-   `images/p2/decode_me.png` resolve exactly as written in the handout.
+## Directory structure
 
-The starter files are scaffolds, not an autograder. Your report and viva must
-explain your own implementation and measurements.
-
-## Supplied data map
-
-| Problem | Supplied files |
-|---|---|
-| P1 | `images/p1/base_2048.png` |
-| P2 | `images/p2/cover_textured.png`, `cover_smooth.png`, `decode_me.png` |
-| P3 A | `images/p3/field_in.png`, `field_out_A.png` |
-| P3 B | `images/p3/field_in.png`, `field_out_B.png` |
-| P3 C | `images/p3/nebula_in.png`, `nebula_out_C.png` |
-| P3 D | `images/p3/field_skycrop_in.png`, `field_skycrop_out_D.png` |
-| P4.1 | `images/p4/equalization/input.png` |
-| P4.2(a) | `images/p4/matching/source.png`, `reference.png` |
-| P4.2(b) | `images/p4/specification/source.png` |
-| P4.2(c) | `images/p4/colour_source.png` |
-| P4.3 | `images/p4/local_regions.png` |
-| P4.4 | `images/p4/exposure/ev0.png` through `ev4.png` |
-
-P2's clean cover for `decode_me.png` is `cover_textured.png`.
-
-P5 images are deliberately not supplied. Source your own qualifying green-screen
-footage and background plate as required by the handout. The optional helper
-`code/assets/ingest_greenscreen.py` can extract and inspect 48 frames. It must be
-run from the bundle root:
-
-```text
-python code/assets/ingest_greenscreen.py path/to/clip.mp4 --frames 48 --report
+```
+.
+├── code/                      Python implementations, one folder per topic
+│   ├── p1_convolution/
+│   │   ├── starter.py         Core implementations (conv2d_*, numeric_rank, ...)
+│   │   └── run_*.py           Scripts that run the analysis and save figures/tables
+│   ├── p2_bitplane/
+│   │   ├── starter.py         Bit-plane ops, LSB embed/extract, robust embedding
+│   │   └── run_*.py
+│   ├── p3_plt/
+│   │   ├── starter.py         Transfer-curve recovery, piecewise fitting, identifiability
+│   │   └── run_*.py
+│   ├── p4_histogram/
+│   │   ├── starter.py         Equalisation, specification, CLAHE, auto-correction
+│   │   └── run_*.py
+│   ├── p5_greenscreen/
+│   │   └── starter.py         Keying, matting, spill suppression, compositing
+│   └── assets/
+│       ├── ingest_greenscreen.py   Extracts a usable 48-frame window from a video clip
+│       └── check_asset.py          Sanity-checks extracted footage for keying quality
+│
+├── images/                    Source images, one folder per topic
+│   ├── p1/base_2048.png       2048×2048 greyscale test photograph
+│   ├── p2/                    Steganography cover images + a pre-hidden payload
+│   ├── p3/                    Input/output image pairs for tone-curve recovery
+│   ├── p4/                    Equalisation/matching/specification/exposure images
+│   └── p5/                    Green-screen clip, extracted frames, background plate
+│
+├── Report/
+│   ├── main.tex                Full write-up (LaTeX), one section per topic
+│   ├── main.pdf                Compiled report
+│   ├── Images/                 Figures generated by the run_*.py scripts
+│   └── tables_*.tex            Result tables generated by the run_*.py scripts
+│
+├── ATTRIBUTION.md              Source and licence for every non-original image/clip
+├── requirements.txt            Python dependencies
+└── DIP_A1.pdf                  Original problem specification
 ```
 
-This helper uses `code/assets/check_asset.py` and writes selected frames under
-`images/p5/`. You remain responsible for visually checking that your footage
-contains real hair, motion blur, or translucent detail.
+Every `code/*/starter.py` holds the actual from-scratch algorithm implementations.
+Every `code/*/run_*.py` is a standalone script — run it and it regenerates the
+corresponding figures in `Report/Images/` and tables in `Report/*.tex` from the raw
+images.
 
-## Files intentionally not supplied
+## Running it
 
-- A P2 ramp: construct it with NumPy as requested.
-- P5 footage or background: source both yourself.
-- Processed outputs, reference answers, solution code, hidden-answer arrays, or
-  instructor grading material.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-See `ATTRIBUTION.md` for licences and source credits for the supplied images.
-`MANIFEST_SHA256.txt` records SHA-256 hashes for the release files so accidental
-asset corruption can be detected after download.
+# from the repository root, e.g.:
+python code/p1_convolution/run_1_1_correctness.py
+python code/p4_histogram/run_4_3_local.py
+```
+
+Scripts assume they're run from the repository root, so that paths like
+`images/p2/decode_me.png` resolve correctly.
+
+To rebuild the report:
+
+```bash
+cd Report && pdflatex main.tex
+```
+
+See `ATTRIBUTION.md` for the licence and source of every image or video not
+generated by the code in this repository.
