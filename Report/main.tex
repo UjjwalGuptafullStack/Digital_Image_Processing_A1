@@ -43,7 +43,8 @@ NumPy version & 2.5.2 \\
 \section{Problem 1 --- Convolution (30)}
 %=======================================================================
 
-\subsection{1.1 Correctness (6)}
+\subsection*{1.1 Correctness (6)}
+\addcontentsline{toc}{subsection}{1.1 Correctness (6)}
 
 Four implementations of 2-D convolution were built from scratch: \texttt{conv2d\_loops} (four
 nested Python loops), \texttt{conv2d\_taps} (loop over the $k \times k$ kernel taps, vectorised
@@ -148,10 +149,10 @@ t_{2048,15} = t_{128,7} \times \underbrace{\frac{2048^2}{128^2}}_{256} \times
 This is why the handout does not ask for the full-size run: at $\sim 7$ minutes for a single
 convolution, running \texttt{conv2d\_loops} at $2048\times2048, k{=}15$ would be a poor use of
 time for a result already predictable from the loop structure. This cost motivates the vectorised
-(\texttt{conv2d\_taps}), im2col, and FFT implementations benchmarked in
-Section~\ref{sec:1.4}.
+(\texttt{conv2d\_taps}), im2col, and FFT implementations benchmarked in \S1.4.
 
-\subsection{1.2 Kernel rank (6)}
+\subsection*{1.2 Kernel rank (6)}
+\addcontentsline{toc}{subsection}{1.2 Kernel rank (6)}
 
 \paragraph{Threshold for calling a singular value zero.}
 $\sigma_i$ is treated as zero if $\sigma_i \le \tau$, with
@@ -231,7 +232,8 @@ single $(u,v)$ pair reproduces it via $uv^\top$: representing which column is ac
 needs one degree of freedom per row, i.e.\ full rank. Separability is a property of how the
 operator aligns with the sampling grid, not an invariant of the operator itself.
 
-\subsection{1.3 Separability and low rank (10)}
+\subsection*{1.3 Separability and low rank (10)}
+\addcontentsline{toc}{subsection}{1.3 Separability and low rank (10)}
 
 \texttt{conv2d\_separable} uses the SVD $K = U S V^\top$, raises if $K$'s numeric rank exceeds 1,
 and otherwise convolves with the flipped column factor $u_1[::-1]$ along one axis, then the
@@ -300,8 +302,8 @@ decay (motion-45\textdegree, random) predicts poor low-rank PSNR until $r \to k$
 \label{fig:spectra_linear}
 \end{figure}
 
-\subsection{1.4 Runtime analysis (8)}
-\label{sec:1.4}
+\subsection*{1.4 Runtime analysis (8)}
+\addcontentsline{toc}{subsection}{1.4 Runtime analysis (8)}
 
 All timings below use the separable Gaussian kernel (rank 1 at every $k$ tested, matching \S1.1)
 and report the \emph{median} of 7 repetitions (3 for the two largest $N$, where each run already
@@ -405,7 +407,8 @@ towards the asymptotic prediction.
 \section{Problem 2 --- Bit-plane slicing and steganography (20)}
 %=======================================================================
 
-\subsection{2.1 Decomposition (5)}
+\subsection*{2.1 Decomposition (5)}
+\addcontentsline{toc}{subsection}{2.1 Decomposition (5)}
 
 \paragraph{Bit planes.} \texttt{cover\_textured.png} decomposed into its 8 bit planes via
 $(\text{img} \gg b)\ \&\ 1$, $b=0$ (LSB) to $b=7$ (MSB).
@@ -473,7 +476,8 @@ differ in exactly one bit, so each plane instead shows broader, coarser bands ra
 periodic stripes, and no plane is disturbed by a carry propagating through multiple bit
 positions.
 
-\subsection{2.2 Hide and recover a payload (5)}
+\subsection*{2.2 Hide and recover a payload (5)}
+\addcontentsline{toc}{subsection}{2.2 Hide and recover a payload (5)}
 
 \paragraph{Recovery.} Reading plane-0 LSBs of \texttt{decode\_me.png} in raster order recovers
 the sync marker \texttt{10101010} exactly, followed by height $=64$, width $=64$
@@ -543,7 +547,8 @@ cannot show this because it is a global, per-pixel-squared-error average that is
 the changes land relative to local image structure; \texttt{cover\_textured} is the
 materially better hiding place.
 
-\subsection{2.3 Survive the channel (10)}
+\subsection*{2.3 Survive the channel (10)}
+\addcontentsline{toc}{subsection}{2.3 Survive the channel (10)}
 
 \paragraph{Naive LSB baseline.} As stated in the handout, naive plane-0 LSB embedding is already
 at chance: measured BER $\ge 0.45$ at every $\sigma \ge 1$ tested and $0.555$ after JPEG-75
@@ -657,7 +662,8 @@ placement of $k{-}1$ breakpoints (via dynamic programming over the supported lev
 unweighted least-squares error --- unweighted because each \emph{level} is one independent fact
 about $T$, not each pixel) and selects $k$ by a quantisation-floored BIC (derived in \S3.2).
 
-\subsection{3.1 Recover two known transforms (4)}
+\subsection*{3.1 Recover two known transforms (4)}
+\addcontentsline{toc}{subsection}{3.1 Recover two known transforms (4)}
 
 \begin{figure}[H]
 \centering
@@ -693,7 +699,8 @@ from, whereas having both the input \emph{and} output image directly labels ever
 $(v, T(v))$ pair, resolving the ambiguity by direct observation rather than by inverting a
 non-injective function.
 
-\subsection{3.2 Choose the number of segments (3)}
+\subsection*{3.2 Choose the number of segments (3)}
+\addcontentsline{toc}{subsection}{3.2 Choose the number of segments (3)}
 
 \paragraph{Complexity penalty.} A pure least-squares fit's SSE is monotonically non-increasing in
 $k$ (more segments can only fit at least as well), so $k$ cannot be chosen by minimising SSE
@@ -744,7 +751,8 @@ flooring caps how much further $\log(\text{SSE})$ can fall; the $k$-dependent pa
 then correctly makes $k=4$ worse ($-591.8$) than $k=3$ ($-602.9$), recovering the true 3-segment
 structure with no near-duplicate slopes.
 
-\subsection{3.3 Identifiability (3)}
+\subsection*{3.3 Identifiability (3)}
+\addcontentsline{toc}{subsection}{3.3 Identifiability (3)}
 
 \paragraph{(a) Input histogram and sampled range.}
 \texttt{field\_skycrop\_in.png} is a $200\times200$ crop containing almost nothing but sky.
@@ -804,7 +812,8 @@ does not constrain is the correct answer, not a failure to find one more segment
 \section{Problem 4 --- Histograms (25)}
 %=======================================================================
 
-\subsection{4.1 Global equalisation (5)}
+\subsection*{4.1 Global equalisation (5)}
+\addcontentsline{toc}{subsection}{4.1 Global equalisation (5)}
 
 $T(v)=\text{round}(255F(v))$, $F$ the normalised inclusive CDF, no $\text{CDF}_{\min}$ rescaling.
 
@@ -859,7 +868,8 @@ per pixel (pure integer-rounding artefact), mean absolute change $0.5$.}
 \label{fig:p4_near_noop}
 \end{figure}
 
-\subsection{4.2 Histogram matching and specification (6)}
+\subsection*{4.2 Histogram matching and specification (6)}
+\addcontentsline{toc}{subsection}{4.2 Histogram matching and specification (6)}
 
 \texttt{specify} implements inverse-CDF composition: for source level $v$, the output level is
 the smallest $w$ with $F_{\text{target}}(w) \ge F_{\text{source}}(v)$ --- the standard
@@ -926,7 +936,8 @@ confirming the achieved histograms closely approximate their targets --- consist
 visual overlays in Figures~\ref{fig:p4_matching}--\ref{fig:p4_specification} but quantified
 rather than eyeballed.
 
-\subsection{4.3 Local histogram processing (10)}
+\subsection*{4.3 Local histogram processing (10)}
+\addcontentsline{toc}{subsection}{4.3 Local histogram processing (10)}
 \texttt{local\_regions.png} converted once to 8-bit BT.601 luminance,
 $Y=\text{round}(0.299R+0.587G+0.114B)$, used throughout this section.
 
@@ -1018,7 +1029,8 @@ The extra information this needs beyond CLAHE: an appropriate \emph{target shape
 here estimated from the region's own smoothed histogram peaks rather than assumed uniform ---
 knowledge CLAHE does not use because it always targets (a clipped approximation of) uniform.
 
-\subsection{4.4 Automatic correction (4)}
+\subsection*{4.4 Automatic correction (4)}
+\addcontentsline{toc}{subsection}{4.4 Automatic correction (4)}
 
 \paragraph{Estimator.} \texttt{auto\_correct} applies a percentile-based linear contrast stretch
 to BT.601 luma: the image's own 1st and 99th luma percentiles $p_1, p_{99}$ (computed fresh from
@@ -1085,28 +1097,211 @@ a real limitation of purely image-domain auto-correction, not a bug specific to 
 \section{Problem 5 --- Green screen compositing (15)}
 %=======================================================================
 
-\todoblock{Source qualifying footage (720p+, hair/motion-blur/translucent subject on green
-backing, 48 frames) and a background plate $\geq 2.5\times$ frame width; state the clip choice
-and why it qualifies.}
+\paragraph{Footage and background plate.}
+Clip: \emph{"Slap In The Face, Punch, Blow"} by KlausHausmann (Pixabay Content Licence,
+credited in \texttt{ATTRIBUTION.md}), $1920\times1080$ at 25\,fps, 30.4\,s. It shows a subject
+on an evenly-lit green backing reacting to an off-screen slap: real, unscripted motion (head
+snap, recoil) produces genuine motion blur on several frames, fine loose hair with wispy
+flyaway strands visible against the backing, and a second arm entering frame in a
+green-tinted glove/sleeve showing heavy spill contamination -- all three of the handout's
+required properties (hair, motion blur, translucent/soft-edged material) are present, none of
+them staged for this assignment. 48 consecutive frames (the highest-scoring 48-frame window
+found by \texttt{ingest\_greenscreen.py}, corresponding to source frames 276--323) were
+extracted to $1280\times720$ and saved to \texttt{images/p5/frames/}. The clip is real
+camera footage, not AI-generated or animated, and carries no watermark.
 
-\subsection{5.1 Naive key (3)}
-\todoblock{Threshold on green dominance in raw RGB, then key on chroma alone in YCbCr or HSV;
-identify a specific failing pixel for the RGB version and explain the RGB property responsible.}
+Background plate: \emph{"Wide view to Gornergletscher, Monte Rosa and Matterhorn, 2012
+August"} by Ximonic (Simo Räsänen), CC BY-SA 3.0 (Wikimedia Commons, credited in
+\texttt{ATTRIBUTION.md}), $9650\times3190$ px -- $7.5\times$ the $1280$px frame width, well
+past the required $2.5\times$, giving ample room to pan.
 
-\subsection{5.2 Soft matte and spill suppression (7)}
-\todoblock{(a) Chroma-distance distributions for backing / partially-transparent / foreground
-pixels; state whether the three populations separate.}
+\subsection*{5.1 Naive key (3)}
+\addcontentsline{toc}{subsection}{5.1 Naive key (3)}
 
-\todoblock{(b) Continuous alpha from chroma distance; composite $I = \alpha F + (1-\alpha)B$;
-report the fraction of pixels with fractional alpha.}
+\paragraph{RGB dominance vs.\ chroma (hue angle).}
+\texttt{key\_naive\_rgb} thresholds green dominance, $G-\max(R,B) > 60$. The chroma-only
+keyer computes BT.601 YCbCr and thresholds the \emph{hue angle}
+$\theta=\operatorname{atan2}(C_r-128,\,C_b-128)$ against the backing's own hue angle
+(threshold $25^\circ$), rather than raw Euclidean $(C_b,C_r)$ distance: $\theta$ depends only
+on the \emph{ratio} of $(R-Y)$ to $(B-Y)$, not their magnitude, so unlike dominance (an
+absolute difference) or raw chroma distance (which shrinks toward the achromatic point as a
+colour darkens, see below) it is exactly invariant to uniform brightness scaling --
+demonstrated algebraically in the construction that follows.
 
-\todoblock{(c) Spill suppression scaling with $(1-\alpha)$; measure residual green excess over
-fractional-alpha pixels only.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Images/p5_5_1_naive_key.png}
+\caption{Naive keys on a real frame. Backing here is evenly lit, so both keyers agree closely
+on the silhouette (kept fraction $35.1\%$ vs.\ $33.0\%$); the hue-angle key is visibly noisier
+on the desaturated jacket, where hue is close to undefined (small $|C_b-128|,|C_r-128|$ make
+$\operatorname{atan2}$ unstable) -- the same caveat as the saturation threshold used for hue
+statistics in \S4.2(c).}
+\label{fig:p5_naive_key}
+\end{figure}
 
-\todoblock{(d) Compare naive vs.\ soft mattes: mean absolute difference of alpha maps and of
-their gradient fields; explain the disagreement.}
+\paragraph{Constructing the RGB failure.}
+On this footage the backing is evenly lit, so the RGB failure is mild: dominance stays
+$\ge65$ everywhere sampled, comfortably above the $60$ threshold used above. The handout
+permits constructing the case where it would not be. Scaling the measured backing colour
+$(61.6, 200.8, 70.2)$ toward black by a brightness factor $f$ simulates shadow/uneven
+lighting on the \emph{same} backing hue:
 
-\subsection{5.3 Video, efficiently (5)}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Images/p5_5_1_synthetic_darkening.png}
+\caption{Same backing colour scaled by brightness factor $f$. RGB dominance (left) crosses
+below threshold at $f\approx0.4$ (RGB $\approx(24,80,28)$), wrongly keeping shadowed backing
+as foreground; hue angle (right) stays at exactly $0.00^\circ$ deviation at every $f$ tested.}
+\label{fig:p5_darkening}
+\end{figure}
+
+At $f=0.4$ (RGB $=(24,80,28)$, a plausible shadowed patch of the same green backing),
+dominance $=52.2 \le 60$: \texttt{key\_naive\_rgb} wrongly classifies this pixel as
+foreground. The property responsible is that RGB dominance is an \emph{absolute} pixel-value
+difference, and every RGB channel scales down together as a surface is more dimly lit, so
+$G-\max(R,B)$ shrinks proportionally with brightness even though the hue has not changed at
+all. Algebraically: for $Y=0.299R+0.587G+0.114B$, $C_b=128+0.564(B-Y)$,
+$C_r=128+0.713(R-Y)$, scaling $(R,G,B)\to f(R,G,B)$ scales $(C_b-128)$ and $(C_r-128)$ by the
+same factor $f$, leaving their \emph{ratio} -- and hence
+$\theta=\operatorname{atan2}(C_r-128,C_b-128)$ -- exactly unchanged; this is confirmed by the
+$0.00^\circ$ deviation at every $f$ in Figure~\ref{fig:p5_darkening}, down to $f=0.1$ where
+dominance has collapsed to $13.1$.
+
+\subsection*{5.2 Soft matte and spill suppression (7)}
+\addcontentsline{toc}{subsection}{5.2 Soft matte and spill suppression (7)}
+
+\texttt{estimate\_key\_colour} samples a 24-pixel border around the frame (assumed backing,
+since a correctly framed subject does not touch the edges) and takes the \emph{median}
+$(C_b,C_r)$, robust to any stray non-backing pixels at the border.
+
+\paragraph{(a) Chroma-distance distributions.}
+Chroma distance $d=\|(C_b,C_r)-\text{key}\|$ measured over three regions of one frame: pure
+backing (top strip), pure foreground (face and jacket patches), and a hair-edge strip
+expected to contain genuine partial coverage.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{Images/p5_5_2_chroma_distributions.png}
+\caption{Chroma-distance distributions, three populations, one frame.}
+\label{fig:p5_chroma_dist}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Population & $n$ & mean & p1 & p99 \\
+\midrule
+Pure backing & 70{,}400 & 5.61 & 2.34 & 8.63 \\
+Hair edge (partial) & 12{,}800 & 39.79 & 1.39 & 77.99 \\
+Pure foreground & 63{,}000 & 74.04 & 43.79 & 90.80 \\
+\bottomrule
+\end{tabular}
+\caption{Chroma-distance summary statistics per population.}
+\end{table}
+
+Backing and foreground \textbf{separate cleanly}: backing's p99 ($8.6$) is well below
+foreground's p1 ($43.8$), with no overlap between the two populations' bulk. The hair-edge
+population spans almost the entire gap between them (p1$=1.4$ to p99$=78.0$) rather than
+clustering near either extreme, confirming genuine fractional optical mixing exists in this
+footage, not just a sharp cutoff blurred by compression noise. This separation is what makes
+a double-threshold soft key meaningful: $t_{\text{in}}=12$ (just above backing's p99) and
+$t_{\text{out}}=58$ (at foreground's p1) were chosen directly from these percentiles, with a
+small margin on each side.
+
+\paragraph{(b) Continuous alpha and composite.}
+\texttt{key\_soft} ramps linearly between $t_{\text{in}}$ and $t_{\text{out}}$. On this frame,
+$1.06\%$ of pixels have fractional alpha ($0<\alpha<1$) --- small in absolute terms because
+the subject's silhouette boundary is a thin curve relative to a $720\times1280$ frame, but
+concentrated exactly where it matters (the hair strands, Figure~\ref{fig:p5_soft_composite}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Images/p5_5_2_soft_alpha_composite.png}
+\caption{Soft alpha matte and composite against the panorama background plate. The matte
+shows individual hair strands as grey (fractional alpha), not a hard cutoff.}
+\label{fig:p5_soft_composite}
+\end{figure}
+
+\paragraph{(c) Spill suppression.}
+\texttt{suppress\_spill} removes green excess $\max(G-\max(R,B),0)$ scaled by
+$\text{strength}\times(1-\alpha)$. Scaling by $(1-\alpha)$ matters because $\alpha$ is itself
+an estimate of how little backing light is mixed into a pixel: at $\alpha=1$ (confidently
+pure foreground) any green excess is genuine subject colour and must not be touched; at
+$\alpha=0$ the pixel is about to be replaced by the background pixel entirely, so correcting
+its RGB is moot; spill contamination is concentrated exactly at fractional-alpha pixels, so
+the correction should be strongest there and vanish at both extremes.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+Strength & Mean residual green excess (fractional-alpha px) \\
+\midrule
+0 (before) & 57.93 \\
+1.0 & 22.97 (60\% reduction) \\
+2.0 & 8.77 (85\% reduction) \\
+3.0 & 5.17 (91\% reduction) \\
+5.0 & 2.74 (95\% reduction) \\
+\bottomrule
+\end{tabular}
+\caption{Residual green excess vs.\ spill-suppression strength, fractional-alpha pixels only.}
+\label{tab:p5_spill_strength}
+\end{table}
+
+At the hair edge, mean $\alpha\approx0.61$, so strength$=1$ removes only $\approx39\%$ of raw
+excess by construction ($1-\alpha\approx0.39$) --- an intentional under-correction at
+partially-opaque pixels, not a bug, but insufficient to fully clean visible fringing at this
+particular alpha range. Strength$=3$ (91\% reduction) was used for the composite below.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Images/p5_5_2_spill_suppression.png}
+\caption{Hair-edge crop before/after spill suppression (strength$=3$), and the green-excess
+distribution restricted to fractional-alpha pixels, where spill actually lives (pure backing
+is about to be discarded; pure foreground carries none).}
+\label{fig:p5_spill_suppression}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{Images/p5_5_2_composite_spill_compare.png}
+\caption{Composite with and without spill suppression, zoomed on the hair edge: visible
+green/teal fringing on hair strands without suppression, substantially reduced with it. Some
+residual fringing remains (Table~\ref{tab:p5_spill_strength}, 91\% not 100\% reduction),
+consistent with strength$=3$ rather than full correction.}
+\label{fig:p5_composite_spill}
+\end{figure}
+
+\paragraph{(d) Naive vs.\ soft matte comparison.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Images/p5_5_2_naive_vs_soft.png}
+\caption{Naive hard matte, soft matte, and their absolute difference (MAD$=0.0026$ over the
+whole frame).}
+\label{fig:p5_naive_vs_soft}
+\end{figure}
+$\text{MAD}(\alpha_{\text{naive}},\alpha_{\text{soft}})=0.0026$ over the whole
+$720\times1280$ frame, and gradient-field SAD $=228.32$ (raw units, \texttt{grad\_error}).
+The two mattes \textbf{disagree sharply but only very locally}: the difference map
+(Figure~\ref{fig:p5_naive_vs_soft}, right) is essentially zero everywhere except a thin outline
+tracing the silhouette boundary plus a denser cluster exactly at the hair strands --- the same
+region identified as genuinely fractional in (a). The aggregate MAD is small because agreement
+is near-total over the $98.9\%$ of the frame that is unambiguously backing or unambiguously
+foreground (both keyers agree there almost by definition, since a hard threshold and a soft
+ramp converge far from the transition band); the disagreement is not spread thinly across the
+whole frame but concentrated where the object being estimated --- alpha itself --- is
+genuinely fractional and a single threshold cannot be right no matter where it is placed. The
+gradient-field metric is the more informative of the two here: the hard matte's silhouette
+boundary is a step (unbounded gradient magnitude at the edge, before smoothing) while the soft
+matte's boundary is a ramp over a few pixels, so \texttt{grad\_error} captures exactly this
+edge-sharpness difference that a per-pixel MAD, dominated by the vast agreeing interior,
+underweights. The soft matte's gradient more faithfully predicts what is visible in the
+composite (Figure~\ref{fig:p5_soft_composite}): individual hair strands with partial
+translucency, which the naive matte's binary silhouette cannot represent at all.
+
+\subsection*{5.3 Video, efficiently (5)}
+\addcontentsline{toc}{subsection}{5.3 Video, efficiently (5)}
 \todoblock{Vectorised compositing of 48 frames against a panning background crop, encoded to
 mp4; report fps and the measured bottleneck.}
 
