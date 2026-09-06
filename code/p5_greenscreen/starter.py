@@ -2,6 +2,38 @@
 import numpy as np
 
 
+def load_frame_window(clip_path, n_frames=48, size=(1280, 720), max_decode=600):
+    """Decode `clip_path` and return the same 48-frame window
+    ingest_greenscreen.py would extract, without writing any files to disk.
+
+    Reproduces ingest_greenscreen.py's deterministic fallback exactly,
+    including its max_decode=600 cap (decode only the first 600 frames of
+    the clip, ingest_greenscreen.py's own default): same PIL LANCZOS
+    thumbnail resize, then the middle contiguous run of `n_frames` frames,
+    start = (len(frames) - n_frames) // 2. This is a pure function of the
+    clip file and these parameters, so the same clip always yields the
+    same window -- no scoring pass, no randomness, nothing cached. Verified
+    to reproduce images/p5/frames/f000-f047.png byte-for-byte.
+    """
+    import imageio.v2 as imageio
+    from PIL import Image
+
+    W, H = size
+    rdr = imageio.get_reader(str(clip_path), "ffmpeg")
+    frames = []
+    for i, fr in enumerate(rdr):
+        if i >= max_decode:
+            break
+        im = Image.fromarray(fr).convert("RGB")
+        if im.size[0] > W or im.size[1] > H:
+            im.thumbnail((W, H), Image.LANCZOS)
+        frames.append(np.asarray(im))
+    rdr.close()
+
+    start = max(0, (len(frames) - n_frames) // 2)
+    return frames[start:start + n_frames]
+
+
 def to_ycbcr(rgb):
     """TODO 5.1: BT.601 conversion.
 

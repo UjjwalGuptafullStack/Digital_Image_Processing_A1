@@ -62,7 +62,8 @@ you can re-run.
 │   ├── p2/                    Steganography cover images + a pre-hidden payload
 │   ├── p3/                    Input/output image pairs for tone-curve recovery
 │   ├── p4/                    Equalisation/matching/specification/exposure images
-│   └── p5/                    Green-screen clip, extracted frames, background plate
+│   └── p5/                    Green-screen clip, background plate (frames are
+│                               decoded from the clip on the fly, not stored)
 │
 ├── report.pdf                 Full write-up: one section per topic
 ├── ATTRIBUTION.md             Source and licence for every non-original image/clip
