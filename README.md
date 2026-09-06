@@ -1,5 +1,7 @@
 # Digital Image Processing — From Scratch
 
+Repository: https://github.com/UjjwalGuptafullStack/Digital_Image_Processing_A1
+
 A collection of core image-processing algorithms implemented from first principles in
 NumPy — no `scipy.ndimage`, `scipy.signal`, `cv2`, or `skimage` calls in the actual
 implementations (only used to cross-check results). Covers 2-D convolution, bit-plane
