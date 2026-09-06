@@ -6,3 +6,5 @@ matplotlib>=3.6
 imageio>=2.25
 imageio-ffmpeg>=0.4
 reportlab>=4.0
+jupyter>=1.0
+ipykernel>=6.0
