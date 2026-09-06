@@ -1,0 +1,16 @@
+# Python virtual environment (reproducible via requirements.txt)
+.venv/
+__pycache__/
+*.pyc
+
+# LaTeX build artifacts (main.pdf is committed; these are intermediate)
+Report/*.aux
+Report/*.log
+Report/*.out
+Report/*.toc
+Report/*.fls
+Report/*.fdb_latexmk
+Report/*.synctex.gz
+
+# OS cruft
+.DS_Store
