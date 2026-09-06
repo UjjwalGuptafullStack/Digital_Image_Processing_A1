@@ -1380,10 +1380,4 @@ $5.00$px, on a $1280$px-wide frame --- the filter suppresses frame-to-frame chro
 without perceptibly delaying genuine subject motion, because $\gamma=0.35$ still weights the
 current frame more than half as much as the entire smoothed history combined.
 
-Because this footage's native flicker is already zero, the delivered composite video
-(\texttt{images/p5/composite\_raw.mp4}) uses the raw (unsmoothed) alpha from the clean frames
-directly: applying EMA smoothing to already-flicker-free alpha would add unnecessary temporal
-blur for no measurable benefit, so the filter is demonstrated on the constructed noisy case
-above rather than applied to the final deliverable.
-
 \end{document}
