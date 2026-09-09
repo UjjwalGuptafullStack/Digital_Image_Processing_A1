@@ -207,18 +207,3 @@ def conv2d_lowrank(img, K, r):
 def psnr(a, b, peak=255.0):
     mse = np.mean((a.astype(np.float64) - b.astype(np.float64))**2)
     return float("inf") if mse == 0 else 10 * np.log10(peak * peak / mse)
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-    from PIL import Image
-    from scipy.signal import convolve2d          # checking only
-    root = Path(__file__).resolve().parents[2]
-    img = np.asarray(Image.open(root / "images/p1/base_2048.png")).astype(float)[:128, :128]
-    K = kernel_bank(7)["gaussian"]
-    ref = convolve2d(img, K, mode="same", boundary="fill")
-    for fn in (conv2d_loops, conv2d_taps, conv2d_im2col, conv2d_fft):
-        try:
-            print(f"{fn.__name__:16s} max|err| = {np.abs(fn(img, K) - ref).max():.3e}")
-        except NotImplementedError:
-            print(f"{fn.__name__:16s} not implemented")

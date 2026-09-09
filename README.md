@@ -1,6 +1,12 @@
 # Digital Image Processing — From Scratch
 
-Repository: https://github.com/UjjwalGuptafullStack/Digital_Image_Processing_A1
+All code, notebooks, images, and the report are on GitHub:
+https://github.com/UjjwalGuptafullStack/Digital_Image_Processing_A1
+
+The same `Images/` folder (every input asset and every generated output/figure) is
+also mirrored on OneDrive, for anyone who would rather browse it without cloning the
+repo:
+https://iiithydresearch-my.sharepoint.com/:f:/g/personal/ujjwal_gupta_research_iiit_ac_in/IgAv3--vgP-eSIlLIUivK72DASPb_zGfvKQBRvsiM9eGRzI?e=AkKHOW
 
 A collection of core image-processing algorithms implemented from first principles in
 NumPy — no `scipy.ndimage`, `scipy.signal`, `cv2`, or `skimage` calls in the actual
@@ -59,13 +65,22 @@ you can re-run.
 │       ├── ingest_greenscreen.py   Extracts a usable 48-frame window from a video clip
 │       └── check_asset.py          Sanity-checks extracted footage for keying quality
 │
-├── images/                    Source images, one folder per topic
-│   ├── p1/base_2048.png       2048×2048 greyscale test photograph
-│   ├── p2/                    Steganography cover images + a pre-hidden payload
-│   ├── p3/                    Input/output image pairs for tone-curve recovery
-│   ├── p4/                    Equalisation/matching/specification/exposure images
-│   └── p5/                    Green-screen clip, background plate (frames are
-│                               decoded from the clip on the fly, not stored)
+├── Images/
+│   ├── input/                 Every source asset the notebooks read, by problem
+│   │   ├── P1/                 base_2048.png
+│   │   ├── P2/                 cover_textured.png, cover_smooth.png, decode_me.png
+│   │   ├── P3/                 field_in/out, nebula_in/out, field_skycrop_in/out
+│   │   ├── P4/                 colour_source.png, local_regions.png, equalization/,
+│   │   │                       exposure/, matching/, specification/
+│   │   └── P5/                 green_screen_clip.mp4, pano.jpg
+│   └── output/                 Every figure/result the notebooks generate, by problem
+│       ├── P1/                 conv2d error heatmaps, rank spectra, PSNR-vs-r,
+│       │                       runtime plots (from run_1_1..run_1_4)
+│       ├── P2/                 bit planes, PSNR curves, payload recovery, BER plots
+│       ├── P3/                 transform-recovery scatter/fit plots, BIC selection
+│       ├── P4/                 equalisation, matching/specification, CLAHE ablation,
+│       │                       auto-exposure correction
+│       └── P5/                 naive/soft keying, spill suppression, composite_raw.mp4
 │
 ├── report.pdf                 Full write-up: one section per topic
 ├── ATTRIBUTION.md             Source and licence for every non-original image/clip
@@ -75,9 +90,16 @@ you can re-run.
 
 Every `code/*/starter.py` holds the actual from-scratch algorithm implementations.
 Every `code/*/run_*.ipynb` is a notebook — open it and run all cells to reproduce the
-corresponding figures and printed results directly from the source images; nothing is
-written back to disk, so re-running a notebook never touches the repository's tracked
-files.
+corresponding figures and printed results directly from the images in `Images/input/`;
+nothing is written back to disk, so re-running a notebook never touches the
+repository's tracked files (`Images/output/composite_raw.mp4` is the one exception —
+5.3 writes its rendered composite video there).
+
+`Images/output/` files are named `<notebook>_figNN.png`, in the order each figure
+appears when the notebook is run top to bottom — e.g. `run_4_3_local_fig03.png` is the
+third figure produced by `code/p4_histogram/run_4_3_local.ipynb`. These are exactly
+the same images already embedded as cell outputs inside the notebooks; this folder
+just makes them browsable without opening Jupyter.
 
 ## Running it
 
@@ -90,7 +112,7 @@ jupyter notebook
 
 Open any `code/*/run_*.ipynb` and run all cells. Notebooks assume they're run with
 their own folder as the working directory (Jupyter's default when you open a notebook
-from that folder), so that paths like `../../images/p2/decode_me.png` resolve
+from that folder), so that paths like `../../Images/input/P2/decode_me.png` resolve
 correctly.
 
 See `ATTRIBUTION.md` for the licence and source of every image or video not

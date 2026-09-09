@@ -1,12 +1,12 @@
 """P4 starter. Implement every function marked TODO.
 
 Dataset map (relative to the bundle root):
-  4.1  images/p4/equalization/input.png
-  4.2  images/p4/matching/{source,reference}.png
-       images/p4/specification/source.png
-       images/p4/colour_source.png
-  4.3  images/p4/local_regions.png
-  4.4  images/p4/exposure/ev0.png ... ev4.png
+  4.1  Images/input/P4/equalization/input.png
+  4.2  Images/input/P4/matching/{source,reference}.png
+       Images/input/P4/specification/source.png
+       Images/input/P4/colour_source.png
+  4.3  Images/input/P4/local_regions.png
+  4.4  Images/input/P4/exposure/ev0.png ... ev4.png
 """
 import numpy as np
 

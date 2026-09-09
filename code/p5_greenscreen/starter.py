@@ -13,7 +13,9 @@ def load_frame_window(clip_path, n_frames=48, size=(1280, 720), max_decode=600):
     start = (len(frames) - n_frames) // 2. This is a pure function of the
     clip file and these parameters, so the same clip always yields the
     same window -- no scoring pass, no randomness, nothing cached. Verified
-    to reproduce images/p5/frames/f000-f047.png byte-for-byte.
+    to reproduce the 48-frame window byte-for-byte against a prior
+    on-disk extraction before that extraction was removed in favour of
+    decoding on the fly.
     """
     import imageio.v2 as imageio
     from PIL import Image
